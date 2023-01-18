@@ -63,7 +63,7 @@
         <!-- busco mi controlador productos busco mi metodo edit le envio el parametro por la url (id) y le dig que el valor 
         del id que va a llevar es la variable nueva id que almacena el valor de producto y obtengo el id -->
         <td><a  class="btn btn-warning" th:href="@{/productos/edit/{id}(id=${producto.id})}">Editar</a> </td>
-        <td><a  class="btn btn-danger" href="">Eliminar</a> </td>
+        <td><a  class="btn btn-danger" th:href="@{/productos/delete/{id}(id=${producto.id})}">Eliminar</a> </td>
       </tr>       
     </tbody>
   </table>

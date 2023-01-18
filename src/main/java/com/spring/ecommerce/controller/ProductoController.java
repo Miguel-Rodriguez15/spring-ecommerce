@@ -58,8 +58,14 @@ public class ProductoController {
       
       
       @PostMapping("/update")
-      public String update(Producto producto) {
-    	  productoService.update(producto);
+      public String update(Producto producto) {//le envio por paramtero mi objeto de tipo producto
+    	  productoService.update(producto);//llamo mi creud update le envio por paramtero mi objeto
+    	  return "redirect:/productos";//redireccion a mi listado de productos
+      }
+      
+      @GetMapping("/delete/{id}")//buscamos el id del registro en la variabel{id}
+      public String delete(@PathVariable Integer id ) {//alamaceno en mi nuevo  objeto id
+    	  productoService.delete(id);//llamo mi crud y elimino el id enviado por parametro
     	  return "redirect:/productos";
       }
 }
