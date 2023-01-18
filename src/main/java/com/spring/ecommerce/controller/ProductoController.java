@@ -51,7 +51,15 @@ public class ProductoController {
     	  Optional<Producto> optionalProducto=productoService.get(id);//devolvemos el id
     	  producto =optionalProducto.get();//traemos el pdroducto que solicitamos buscar
     	  LOGGER.info("producto Buscado:{}",producto);//mostramos el id solicitado por consola
-    	  model.addAttribute("producto", producto);
+    	  model.addAttribute("producto", producto);//mi objeto model agrego los atributos le paso el valor producto para cargar en la vista
     	  return "productos/edit";//retornamos la vista
+      }
+      
+      
+      
+      @PostMapping("/update")
+      public String update(Producto producto) {
+    	  productoService.update(producto);
+    	  return "redirect:/productos";
       }
 }
