@@ -46,11 +46,12 @@ public class ProductoController {
     	  return "redirect:/productos";
       }
       @GetMapping("/edit/{id}")//buscamos el id del registro en la variabel{id}
-      public String edit(@PathVariable Integer id) {//mapeamos el id que se esta enviando por url y lo almacenamos en la nueva variable id
+      public String edit(@PathVariable Integer id, Model model) {//llamo mi objeyo model
     	  Producto producto = new Producto();
     	  Optional<Producto> optionalProducto=productoService.get(id);//devolvemos el id
     	  producto =optionalProducto.get();//traemos el pdroducto que solicitamos buscar
     	  LOGGER.info("producto Buscado:{}",producto);//mostramos el id solicitado por consola
+    	  model.addAttribute("producto", producto);
     	  return "productos/edit";//retornamos la vista
       }
 }
