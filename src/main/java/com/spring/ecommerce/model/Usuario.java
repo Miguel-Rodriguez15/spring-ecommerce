@@ -8,12 +8,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
+//indico que esto sera una entidad
 @Entity  
 
+//indico como se llamara mi tabla en mi base de datos
 @Table(name= "usuarios")
 public class Usuario {
+	//creo mi id 
 	@Id 
+	//le indico que este sera autoincrementable
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 private Integer id;
 private String nombre;
@@ -28,7 +31,8 @@ private String password;
 @OneToMany(mappedBy ="usuario")
 private List<Producto> productos;
 
-@OneToMany(mappedBy ="usuario")
+//esto es una relacion de uno a muchos
+@OneToMany(mappedBy ="usuario")//la mapeo con mi variable usuario en mi clase Orden
 private List<Orden> ordenes; 
 
 public Usuario() {

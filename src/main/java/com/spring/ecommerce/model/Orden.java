@@ -19,7 +19,7 @@ private String numero;
 private Date FechaCreacion;
 private Date FechaRecibida;
 private double total;
-
+//Relacion de muchos auno
 @ManyToOne
 private Usuario usuario;
 
