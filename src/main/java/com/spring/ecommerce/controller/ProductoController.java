@@ -1,10 +1,13 @@
 package com.spring.ecommerce.controller;
 
+import java.util.Optional;
+
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -41,5 +44,13 @@ public class ProductoController {
     	producto.setUsuario(u);//almaceno los parametros enviados anteriormente
     	  productoService.save(producto);//guardo mis parametros en la base de datos
     	  return "redirect:/productos";
+      }
+      @GetMapping("/edit/{id}")//buscamos el id del registro en la variabel{id}
+      public String edit(@PathVariable Integer id) {//mapeamos el id que se esta enviando por url y lo almacenamos en la nueva variable id
+    	  Producto producto = new Producto();
+    	  Optional<Producto> optionalProducto=productoService.get(id);//devolvemos el id
+    	  producto =optionalProducto.get();//traemos el pdroducto que solicitamos buscar
+    	  LOGGER.info("producto Buscado:{}",producto);//mostramos el id solicitado por consola
+    	  return "productos/edit";//retornamos la vista
       }
 }
