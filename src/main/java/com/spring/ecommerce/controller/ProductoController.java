@@ -1,5 +1,6 @@
 package com.spring.ecommerce.controller;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.slf4j.*;
@@ -10,10 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.ecommerce.model.Producto;
 import com.spring.ecommerce.model.Usuario;
 import com.spring.ecommerce.service.ProductoService;
+import com.spring.ecommerce.service.UploadFileService;
 
 
 
@@ -25,6 +29,9 @@ public class ProductoController {
 	//creamos un objeto para poder acceder a los metodos crud de la clase
 	@Autowired
 	private ProductoService productoService;
+	
+	@Autowired
+	private UploadFileService upload;
 	
 	
 	@GetMapping("")
@@ -38,11 +45,23 @@ public class ProductoController {
       }
       //METODO PARA TESTEAR DE QUE LOS DATOS SE ESTA GUARDANDO
       @PostMapping("/save")
-      public String save(Producto producto) {
+      public String save(Producto producto, @RequestParam("img") MultipartFile file) throws IOException {
     	  LOGGER.info("este es el objeto de producto {}",producto);//(asegurarnos de que tenga el metodo to string)
     	Usuario u = new Usuario(1, "", "", "", "", "", "", "");//llamo mi entidad usuario y sus respectivos atributos para enviar los datos por parametros
     	producto.setUsuario(u);//almaceno los parametros enviados anteriormente
-    	  productoService.save(producto);//guardo mis parametros en la base de datos
+    	 
+    	//imagen
+    	if(producto.getId()==null) {//cuando se crea un nuevo producto
+    		String nombreImagen=upload.saveImage(file);
+    		producto.setImagen(nombreImagen);
+    	}else {
+    		if(file.isEmpty()) {
+    			Producto p = new Producto();
+    			p=productoService.get(producto.getId()).get();
+    		}
+    	}
+    	
+    	productoService.save(producto);//guardo mis parametros en la base de datos
     	  return "redirect:/productos";
       }
       @GetMapping("/edit/{id}")//buscamos el id del registro en la variabel{id}
