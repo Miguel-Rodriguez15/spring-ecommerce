@@ -1,5 +1,7 @@
 package com.spring.ecommerce.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.spring.ecommerce.model.DetalleOrden;
+import com.spring.ecommerce.model.Orden;
 import com.spring.ecommerce.model.Producto;
 import com.spring.ecommerce.service.ProductoService;
 
@@ -19,6 +24,13 @@ import com.spring.ecommerce.service.ProductoService;
 @RequestMapping("/")//le indico que se lanzara desde la ruta raiz
 public class HomeController {
 	private final Logger log=LoggerFactory.getLogger(HomeController.class);
+	
+	//para almacenar los detalles de la orden
+	List<DetalleOrden> detalles = new ArrayList<DetalleOrden>();
+	
+	//datos de la orden
+	Orden orden = new Orden(); 
+	
 	@Autowired
 	private ProductoService productoService;//lamo mis ervicios
 
@@ -37,8 +49,13 @@ public class HomeController {
 		model.addAttribute("producto", producto);//llamo mi clase model y agrego los traiburos del producto	  
 	    return "usuario/productohome";
 	}
-	@PostMapping("/cart")
-	public String addcart() {
+	@PostMapping("/cart")//se hace una peticion de tipo post que redireccione a este metodo
+	public String addcart(@RequestParam Integer id, @RequestParam Integer cantidad ) {
+		DetalleOrden detalleOrden = new DetalleOrden();
+		double sumaTotal = 0;
+		Optional<Producto> optionalProducto = productoService.get(id);
+		log.info("Producto agregado: {}", optionalProducto.get());
+		log.info("cantidad {}",cantidad);
 		return "usuario/carrito";
 	}
 	
