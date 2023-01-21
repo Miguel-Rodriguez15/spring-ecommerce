@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.spring.ecommerce.model.DetalleOrden;
 import com.spring.ecommerce.model.Orden;
 import com.spring.ecommerce.model.Producto;
+import com.spring.ecommerce.model.Usuario;
+import com.spring.ecommerce.service.IUsuarioService;
 import com.spring.ecommerce.service.ProductoService;
 
 @Controller
@@ -34,6 +36,9 @@ public class HomeController {
 	@Autowired
 	private ProductoService productoService;//lamo mis ervicios
 
+	@Autowired
+	private IUsuarioService usuarioService;
+	
 	@GetMapping("")
 	public String home(Model model) {//llamo miclase model para poder llamar los atributos
 		model.addAttribute("productos", productoService.findAll());//traigo todos los atributos de productos
@@ -121,7 +126,12 @@ public class HomeController {
 	}
 	
 	@GetMapping("/order")
-	public String order() {
+	public String order(Model model) {
+		Usuario usuario = usuarioService.findById(1).get();
+		
+		model.addAttribute("cart", detalles);
+		model.addAttribute("orden", orden);
+		model.addAttribute("usuario", usuario);
 		return "usuario/resumenorden";
 	}
 }
