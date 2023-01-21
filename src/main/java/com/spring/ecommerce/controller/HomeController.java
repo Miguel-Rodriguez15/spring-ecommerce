@@ -112,7 +112,7 @@ public class HomeController {
 		 
 		return "usuario/carrito";
 	}
-	
+	//metodo para ver el carrito desde el header
 	@GetMapping("/getCart")
 	public String getCart(Model model) {
 		model.addAttribute("cart", detalles);
@@ -120,4 +120,8 @@ public class HomeController {
 		return "/usuario/carrito";
 	}
 	
+	@GetMapping("/order")
+	public String order() {
+		return "usuario/resumenorden";
+	}
 }
