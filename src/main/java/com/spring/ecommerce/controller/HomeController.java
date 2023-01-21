@@ -65,8 +65,17 @@ public class HomeController {
 		detalleOrden.setTotal(producto.getPrecio()*cantidad);//multiplicamos el precio del producto por la cantidad para mostrar el total
 		detalleOrden.setProducto(producto);
 		
+		//validar que el produto no se añada dos veces
+		Integer idProducto=producto.getId();
+		boolean ingresado=detalles.stream().anyMatch(p -> p.getProducto().getId()==idProducto);
+		
+		if(!ingresado) {
 		//agregamos todos los atributos almacenados a detalles
-		detalles.add(detalleOrden);
+		
+			detalles.add(detalleOrden);
+		}
+		
+	
 		
 		//sumamos todo los totales del producto que se encuentren en la lista
 		sumaTotal=detalles.stream().mapToDouble(dt->dt.getTotal()).sum();
@@ -84,6 +93,7 @@ public class HomeController {
 		//lista nueva de productos
 		List<DetalleOrden> ordenesNuevas = new ArrayList<DetalleOrden>();
 		
+		//si encuientro un id que este en dellaes ese no lo agrega a las ordenes nuevas
 		for(DetalleOrden detalleOrden:detalles) {
 			if(detalleOrden.getProducto().getId()!=id) {
 				ordenesNuevas.add(detalleOrden);
@@ -97,8 +107,8 @@ public class HomeController {
 		sumaTotal=detalles.stream().mapToDouble(dt->dt.getTotal()).sum();
 		
 		orden.setTotal(sumaTotal);
-		model.addAttribute("cart", detalles);//agregamos al carrito los detalles
-		model.addAttribute("orden", orden);//pasamos por la orden el total
+		model.addAttribute("cart", detalles);
+		model.addAttribute("orden", orden);
 		 
 		return "usuario/carrito";
 	}
