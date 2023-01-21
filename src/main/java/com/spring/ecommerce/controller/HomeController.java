@@ -57,21 +57,48 @@ public class HomeController {
 		Optional<Producto> optionalProducto = productoService.get(id);
 		log.info("Producto agregado: {}", optionalProducto.get());
 		log.info("cantidad {}",cantidad);
-		producto=optionalProducto.get();
+		producto=optionalProducto.get();//muestro los productos obtenidos desde la base datos
 		
-		detalleOrden.setCantidad(cantidad);
+		detalleOrden.setCantidad(cantidad);//lo obtenemos desde la variable cantidad que se envia desde la vista
 		detalleOrden.setPrecio(producto.getPrecio());
 		detalleOrden.setNombre(producto.getNombre());
-		detalleOrden.setTotal(producto.getPrecio()*cantidad);
+		detalleOrden.setTotal(producto.getPrecio()*cantidad);//multiplicamos el precio del producto por la cantidad para mostrar el total
 		detalleOrden.setProducto(producto);
 		
+		//agregamos todos los atributos almacenados a detalles
 		detalles.add(detalleOrden);
 		
+		//sumamos todo los totales del producto que se encuentren en la lista
 		sumaTotal=detalles.stream().mapToDouble(dt->dt.getTotal()).sum();
 		
 		orden.setTotal(sumaTotal);
-		model.addAttribute("cart", detalles);
-		model.addAttribute("orden", orden);
+		model.addAttribute("cart", detalles);//agregamos al carrito los detalles
+		model.addAttribute("orden", orden);//pasamos por la orden el total
+		 
+		return "usuario/carrito";
+	}
+	
+//quitar un producto del carrito
+	@GetMapping("/delete/cart/{id}")
+	public String deleteProductoCar(@PathVariable Integer id, Model model) {
+		//lista nueva de productos
+		List<DetalleOrden> ordenesNuevas = new ArrayList<DetalleOrden>();
+		
+		for(DetalleOrden detalleOrden:detalles) {
+			if(detalleOrden.getProducto().getId()!=id) {
+				ordenesNuevas.add(detalleOrden);
+				
+			}
+		}
+		//poner la nueva lista con los productos restantes
+		detalles=ordenesNuevas;
+		
+		double sumaTotal=0;
+		sumaTotal=detalles.stream().mapToDouble(dt->dt.getTotal()).sum();
+		
+		orden.setTotal(sumaTotal);
+		model.addAttribute("cart", detalles);//agregamos al carrito los detalles
+		model.addAttribute("orden", orden);//pasamos por la orden el total
 		 
 		return "usuario/carrito";
 	}
