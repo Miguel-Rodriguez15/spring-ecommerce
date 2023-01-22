@@ -171,4 +171,13 @@ public class HomeController {
 		
 		return "redirect:/";
 	}
+	
+	@PostMapping("/search")
+	
+	public String searchProduct(@RequestParam String nombre) {
+		log.info("Nombre del producto:{}",nombre);
+		
+		return "usuario/home";
+	}
+	
 }
