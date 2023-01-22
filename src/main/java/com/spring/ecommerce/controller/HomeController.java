@@ -1,6 +1,7 @@
 package com.spring.ecommerce.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,8 @@ import com.spring.ecommerce.model.DetalleOrden;
 import com.spring.ecommerce.model.Orden;
 import com.spring.ecommerce.model.Producto;
 import com.spring.ecommerce.model.Usuario;
+import com.spring.ecommerce.service.IDetalleOrdenService;
+import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
 import com.spring.ecommerce.service.ProductoService;
 
@@ -38,6 +41,12 @@ public class HomeController {
 
 	@Autowired
 	private IUsuarioService usuarioService;
+	
+	@Autowired
+	private IOrdenService ordenService;//creamos el objeto con el fin de acceder al metodo de generar ordenes
+	
+	@Autowired
+	private IDetalleOrdenService detalleOrdenService;//
 	
 	@GetMapping("")
 	public String home(Model model) {//llamo miclase model para poder llamar los atributos
@@ -133,5 +142,33 @@ public class HomeController {
 		model.addAttribute("orden", orden);
 		model.addAttribute("usuario", usuario);
 		return "usuario/resumenorden";
+	}
+	
+	@GetMapping("/saveOrder")	
+	public String saveOrder() {
+		Date fechaCreacion = new Date();
+		orden.setFechaCreacion(fechaCreacion);
+		orden.setNumero(ordenService.generarNumeroOrden());
+		
+		//usuario
+		
+		Usuario usuario = usuarioService.findById(1).get();//le envio el usuario con el id 1 para testeo ya que toda orden necedita un usuario
+
+		orden.setUsuario(usuario);//le envio a la orden mi usuario
+		ordenService.save(orden);//guardo mi orden
+		
+		//guardar detalles
+		
+		for(DetalleOrden dt:detalles) {//el objeto de tipo detalle orden se llamara dt y recorrera la lista DetalleOrden con el objeto detalles
+			dt.setOrden(orden);//pasamos la orden a la que pertenece
+            detalleOrdenService.save(dt);//y pasamos a guardar el detalle de la orden
+		}
+		
+		//limpiar lista y orden
+		orden = new Orden();
+		detalles.clear();
+		
+		
+		return "redirect:/";
 	}
 }
