@@ -181,7 +181,8 @@ public class HomeController {
 		
 	     //mostrar los productos que tengan similitud con la busqueda que realice
 		List<Producto> productos= productoService.findAll().stream().filter(p ->p.getNombre().contains(nombre)).collect(Collectors.toList());
-		model.addAttribute("productos", productos);
+		//reutilizamos la lista que ya tenemos en la pagina home de usuario
+		model.addAttribute("productos", productos);//comparamos la lista de los productos con mi objeto lista de producto recientemente creado
 		
 		return "usuario/home";
 	}

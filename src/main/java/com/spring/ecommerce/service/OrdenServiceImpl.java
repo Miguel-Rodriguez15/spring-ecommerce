@@ -28,19 +28,20 @@ public class OrdenServiceImpl implements IOrdenService {
 	}
 	
 	public String generarNumeroOrden() {
-		int numero = 0;
-		String numeroConcatenado="";
-		List<Orden> ordenes = findAll();
-		List<Integer> numeros=new ArrayList<Integer>();
-		ordenes.stream().forEach(o -> numeros.add(Integer.parseInt(o.getNumero())));
+		int numero = 0;//con este vamos incrementando el numero de la ordes para despues pasarlo a un string
+		String numeroConcatenado="";//este nos va a devolver el numero en String
+		List<Orden> ordenes = findAll();//retornamos todas las ordenes
+		List<Integer> numeros=new ArrayList<Integer>();//iniciamos una lista como entero
+		ordenes.stream().forEach(o -> numeros.add(Integer.parseInt(o.getNumero())));//hacemops las convercion de cadenas de la base de datos a numeros
 		if(ordenes.isEmpty()) {
 			numero=1;
-		}else {
-			numero=numeros.stream().max(Integer::compare).get();
-			numero++;
+		}else {//en caso de que no este vacia es uqe ya hay ordenes guardadas
+			numero=numeros.stream().max(Integer::compare).get();//pasamos el valor mayor de el objeto numero
+			numero++;//y que este objeto numero se  vaya incrementando
 		}
 		
-		if(numero<10) {
+		if(numero<10) {// en caso dado el numero sea menor a 10 este se le agregaran 9 ceros
+			
 			numeroConcatenado="000000000"+String.valueOf(numero);
 		}else if(numero<100) {
 			numeroConcatenado="00000000"+String.valueOf(numero);
