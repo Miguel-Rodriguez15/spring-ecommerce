@@ -124,10 +124,10 @@ public class HomeController {
 		model.addAttribute("orden", orden);
 		return "/usuario/carrito";
 	}
-	
+	//mostrar los datos de la orden y del usuario
 	@GetMapping("/order")
 	public String order(Model model) {
-		Usuario usuario = usuarioService.findById(1).get();
+		Usuario usuario = usuarioService.findById(1).get(); 
 		
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
