@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,8 +176,12 @@ public class HomeController {
 	
 	@PostMapping("/search")
 	
-	public String searchProduct(@RequestParam String nombre) {
+	public String searchProduct(@RequestParam String nombre,Model model) {
 		log.info("Nombre del producto:{}",nombre);
+		
+	     //mostrar los productos que tengan similitud con la busqueda que realice
+		List<Producto> productos= productoService.findAll().stream().filter(p ->p.getNombre().contains(nombre)).collect(Collectors.toList());
+		model.addAttribute("productos", productos);
 		
 		return "usuario/home";
 	}
