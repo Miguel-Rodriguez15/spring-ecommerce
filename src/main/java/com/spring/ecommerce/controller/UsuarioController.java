@@ -31,4 +31,11 @@ public class UsuarioController {
 		usuarioService.save(usuario);
 		return "redirect:/";
 	}
+	@GetMapping("/login")
+	
+	public String login() {
+		return "usuario/login";
+		
+	}
+	
 }
