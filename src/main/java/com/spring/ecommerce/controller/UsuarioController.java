@@ -1,5 +1,7 @@
 package com.spring.ecommerce.controller;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,12 @@ public class UsuarioController {
 	}
 	@PostMapping("/acceder")
 	public String acceder(Usuario usuario) {
+		//verificamos de que los datos estan siendo recibidos y los mostramos por consola
 		logger.info("accesos: {}", usuario);
-		
+		//obtenemos un usuario por la interfaz y nos devuelbva uno igual a la base datos
+		Optional<Usuario> user= usuarioService.findByEmail(usuario.getEmail());
+		/*regresamos por consola el registro del usuario con el correo que hemos enviado*/
+		logger.info("usuario de db: {}",user.get());
 		return "redirect:/";
 	}
 	
