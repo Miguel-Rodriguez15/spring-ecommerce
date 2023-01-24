@@ -37,5 +37,11 @@ public class UsuarioController {
 		return "usuario/login";
 		
 	}
+	@PostMapping("/acceder")
+	public String acceder(Usuario usuario) {
+		logger.info("accesos: {}", usuario);
+		
+		return "redirect:/";
+	}
 	
 }
