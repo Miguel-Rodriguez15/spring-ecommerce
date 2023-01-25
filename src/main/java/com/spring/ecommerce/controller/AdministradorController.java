@@ -37,4 +37,10 @@ public class AdministradorController {
         return "administrador/usuarios";
     }
 
+    @GetMapping("/ordenes")
+    public String ordenes(Model model) {
+        
+        return "administrador/ordenes";
+    }
+
 }
