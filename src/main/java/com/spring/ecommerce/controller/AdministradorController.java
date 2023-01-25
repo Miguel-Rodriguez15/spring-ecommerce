@@ -2,6 +2,7 @@ package com.spring.ecommerce.controller;
 
 import java.util.List;
 
+import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,8 @@ public class AdministradorController {
     @Autowired
     private ProductoService productoService;//llamo mi variables con mis servicios (crud)
 
-
+    @Autowired
+    private IOrdenService ordenService;
     @Autowired
     private IUsuarioService usuarioService;
 
@@ -39,7 +41,7 @@ public class AdministradorController {
 
     @GetMapping("/ordenes")
     public String ordenes(Model model) {
-        
+        model.addAttribute("ordenes", ordenService.findAll());
         return "administrador/ordenes";
     }
 
