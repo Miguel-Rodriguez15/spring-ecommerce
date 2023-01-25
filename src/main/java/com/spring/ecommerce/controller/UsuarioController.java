@@ -100,8 +100,12 @@ public class UsuarioController {
 
     @GetMapping("/detalle/{id}")
     public String detalleCompra(@PathVariable Integer id, HttpSession sessionion, Model model) {
+        //testeo para saber el id de la orden por consola
         logger.info("id de la orden: {}", id);
-       
+
+        Optional<Orden> orden = ordenService.findById(id);
+
+        model.addAttribute("detalles", orden.get().getDetalle());
         //sesion
         model.addAttribute("sesion", sessionion.getAttribute("idusuario"));
 
