@@ -73,6 +73,7 @@ public class UsuarioController {
 	
 	@GetMapping("/compras")
 	public String ObtenerCompras(Model model,HttpSession session) {
+		//se envia la sesion de la variable del usuario para no tener problemas en mantenernos en la vista
 		model.addAttribute("sesion", session.getAttribute("idusuario"));
 		return "usuario/compras";
 	}
