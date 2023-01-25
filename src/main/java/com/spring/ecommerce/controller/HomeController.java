@@ -27,6 +27,8 @@ import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
 import com.spring.ecommerce.service.ProductoService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/")//le indico que se lanzara desde la ruta raiz
 public class HomeController {
@@ -51,7 +53,9 @@ public class HomeController {
 	private IDetalleOrdenService detalleOrdenService;//
 	
 	@GetMapping("")
-	public String home(Model model) {//llamo miclase model para poder llamar los atributos
+	public String home(Model model, HttpSession session) {//llamo miclase model para poder llamar los atributos
+		log.info("sesion del usuario:{}",session.getAttribute("idusuario"));
+		
 		model.addAttribute("productos", productoService.findAll());//traigo todos los atributos de productos
 		return "usuario/home";
 	}
@@ -137,8 +141,8 @@ public class HomeController {
 	}
 	//mostrar los datos de la orden y del usuario
 	@GetMapping("/order")
-	public String order(Model model) {
-		Usuario usuario = usuarioService.findById(1).get(); 
+	public String order(Model model,HttpSession session) {
+		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); 
 		
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
@@ -147,14 +151,14 @@ public class HomeController {
 	}
 	
 	@GetMapping("/saveOrder")	
-	public String saveOrder() {
+	public String saveOrder(HttpSession session) {
 		Date fechaCreacion = new Date();
 		orden.setFechaCreacion(fechaCreacion);
 		orden.setNumero(ordenService.generarNumeroOrden());
 		
 		//usuario
 		
-		Usuario usuario = usuarioService.findById(1).get();//le envio el usuario con el id 1 para testeo ya que toda orden necedita un usuario
+		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); //le envio el usuario con el id 1 para testeo ya que toda orden necedita un usuario
 
 		orden.setUsuario(usuario);//le envio a la orden mi usuario
 		ordenService.save(orden);//guardo mi orden

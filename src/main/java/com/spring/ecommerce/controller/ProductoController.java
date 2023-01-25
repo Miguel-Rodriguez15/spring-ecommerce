@@ -16,8 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.ecommerce.model.Producto;
 import com.spring.ecommerce.model.Usuario;
+import com.spring.ecommerce.service.IUsuarioService;
 import com.spring.ecommerce.service.ProductoService;
 import com.spring.ecommerce.service.UploadFileService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/productos")
@@ -31,6 +34,9 @@ public class ProductoController {
 	@Autowired
 	private UploadFileService upload;
 
+	@Autowired
+	private IUsuarioService usuarioService;
+	
 	@GetMapping("")
 	public String show(Model model) {// este parametro es un objeto envia la lista de objeto producto hacia la vista
 										// show
@@ -45,10 +51,11 @@ public class ProductoController {
 
 	// METODO PARA TESTEAR DE QUE LOS DATOS SE ESTA GUARDANDO
 	@PostMapping("/save")
-	public String save(Producto producto, @RequestParam("img") MultipartFile file) throws IOException {
+	public String save(Producto producto, @RequestParam("img") MultipartFile file, HttpSession session) throws IOException {
 		LOGGER.info("este es el objeto de producto {}", producto);// (asegurarnos de que tenga el metodo to string)
-		Usuario u = new Usuario(1, "", "", "", "", "", "", "");// llamo mi entidad usuario y sus respectivos atributos
-																// para enviar los datos por parametros
+		//Usuario u = new Usuario(1, "", "", "", "", "", "", "");// llamo mi entidad usuario y sus respectivos atributos
+		Usuario u = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); //le envio el usuario con el id 1 para testeo ya que toda orden necedita un usuario
+														// para enviar los datos por parametros
 		producto.setUsuario(u);// almaceno los parametros enviados anteriormente
 
 		// imagen
