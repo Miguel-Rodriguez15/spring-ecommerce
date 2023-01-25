@@ -53,10 +53,15 @@ public class HomeController {
 	private IDetalleOrdenService detalleOrdenService;//
 	
 	@GetMapping("")
-	public String home(Model model, HttpSession session) {//llamo miclase model para poder llamar los atributos
+	public String home(Model model, HttpSession session) {//llamo mi clase model para poder llamar los atributos
+        //lanzamos el id de la session por consola
 		log.info("sesion del usuario:{}",session.getAttribute("idusuario"));
 		
 		model.addAttribute("productos", productoService.findAll());//traigo todos los atributos de productos
+		
+		//sesion
+          model.addAttribute("sesion", session.getAttribute("idusuario"));
+		
 		return "usuario/home";
 	}
 	//metodo recuperar el id del producto al usar la opcion (ver el producto)
@@ -134,9 +139,14 @@ public class HomeController {
 	}
 	//metodo para ver el carrito desde el header
 	@GetMapping("/getCart")
-	public String getCart(Model model) {
+	public String getCart(Model model, HttpSession session) {
+		
+		
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
+		
+		//sesion
+		model.addAttribute("sesion",session.getAttribute("idusuario"));
 		return "/usuario/carrito";
 	}
 	//mostrar los datos de la orden y del usuario
@@ -157,8 +167,8 @@ public class HomeController {
 		orden.setNumero(ordenService.generarNumeroOrden());
 		
 		//usuario
-		
-		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); //le envio el usuario con el id 1 para testeo ya que toda orden necedita un usuario
+		//hacemos el envio del usuario por el id de la session
+		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); 
 
 		orden.setUsuario(usuario);//le envio a la orden mi usuario
 		ordenService.save(orden);//guardo mi orden
