@@ -4,10 +4,14 @@ import java.util.List;
 
 import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.spring.ecommerce.model.Producto;
@@ -19,6 +23,7 @@ public class AdministradorController {
     @Autowired
     private ProductoService productoService;//llamo mi variables con mis servicios (crud)
 
+    private Logger logg = LoggerFactory.getLogger(AdministradorController.class);
     @Autowired
     private IOrdenService ordenService;
     @Autowired
@@ -45,4 +50,15 @@ public class AdministradorController {
         return "administrador/ordenes";
     }
 
+
+    /**
+     * Creacion del metodo detalle orden para wl administrador
+     *
+     * @param id, identificador de la orden  que se encuentra en la base de taos
+     */
+    @GetMapping("/detalle/{id}")
+    public String detalle(Model model, @PathVariable Integer id) {
+        logg.info("id de la orden {}", id);
+        return "administrador/detalleorden";
+    }
 }

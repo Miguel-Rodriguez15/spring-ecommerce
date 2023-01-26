@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://thymeleaf.org">
 
-
 <head>
 
     <meta charset="utf-8">
@@ -32,12 +31,13 @@
 
     <!-- Page Heading/Breadcrumbs -->
     <h1 class="mt-4 mb-3">
-        Spring eCommerce <small>Ordenes</small>
+        Spring eCommerce <small>Detalles</small>
     </h1>
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-        <li class="breadcrumb-item active">Ordenes</li>
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item"><a href="compras.html">Compras</a></li>
+        <li class="breadcrumb-item active">Detalle de Compra</li>
     </ol>
 
     <!-- Blog Post -->
@@ -48,20 +48,18 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col">No. de Orden</th>
-                            <th scope="col">Fecha</th>
-                            <th scope="col">Valor</th>
-                            <th scope="col">Acción</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Total</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="orden:${ordenes} ">
-                            <td th:text="${orden.numero}"></td>
-                            <td th:text="${orden.fechaCreacion}"></td>
-                            <td th:text="${orden.total}">Total</td>
-                            <td><a th:href="@{/administrador/detalle/{id} (id=${orden.id})}"
-                                   class="btn btn-success">Ver
-                                Detalle</a></td>
+                        <tr>
+                            <td>Cantidad</td>
+                            <td>Producto</td>
+                            <td>Precio</td>
+                            <td>Total</td>
                         </tr>
                         </tbody>
                     </table>
@@ -72,15 +70,20 @@
 </div>
 <!-- /.container -->
 
-
 <!-- Footer -->
-<div th:include="administrador/template_admin.html::footer"></div>
-
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Spring eCommerce 2020</p>
+    </div>
+    <!-- /.container -->
+</footer>
 
 <!-- Bootstrap core JavaScript -->
 <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
 <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
+
 </body>
 
 </html>
+
