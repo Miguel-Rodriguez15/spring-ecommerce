@@ -2,6 +2,7 @@ package com.spring.ecommerce.controller;
 
 import java.util.List;
 
+import com.spring.ecommerce.model.Orden;
 import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
 import org.slf4j.ILoggerFactory;
@@ -54,11 +55,13 @@ public class AdministradorController {
     /**
      * Creacion del metodo detalle orden para wl administrador
      *
-     * @param id, identificador de la orden  que se encuentra en la base de taos
+     * @param id, identificador de la orden  que se encuentra en la base de tados
      */
     @GetMapping("/detalle/{id}")
     public String detalle(Model model, @PathVariable Integer id) {
         logg.info("id de la orden {}", id);
+        Orden orden = ordenService.findById(id).get();
+        model.addAttribute("detalles", orden.getDetalle());
         return "administrador/detalleorden";
     }
 }
