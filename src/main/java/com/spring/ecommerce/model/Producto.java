@@ -7,7 +7,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-@Entity 
+/**
+ * Clase Productos con sus respectivos actributos y relaciones
+ *
+ * @autor Miguel Rodriguez
+ */
+@Entity
 @Table(name = "productos")
 public class Producto {
 	@Id
@@ -20,13 +25,23 @@ public class Producto {
 	private int cantidad;
 	@ManyToOne
 	private Usuario usuario;
-	public Producto() {
-		// TODO Auto-generated constructor stub
-	}
-	
 
+	public Producto() {
+
+	}
+
+	/**
+	 * Constructor Producto
+	 *
+	 * @param id          , identificador autoincrementable del producto
+	 * @param nombre      , nombre del producto
+	 * @param descripcion , descripcion del producto
+	 * @param imagen      , nombre de la imagen del producto del producto
+	 * @param precio      , precio del producto
+	 * @param cantidad    , cantidad de productos agregados
+	 */
 	public Producto(Integer id, String nombre, String descripcion, String imagen, double precio, int cantidad,
-			Usuario usuario) {
+					Usuario usuario) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -109,6 +124,6 @@ public class Producto {
 		return "Producto [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", imagen=" + imagen
 				+ ", precio=" + precio + ", cantidad=" + cantidad + "]";
 	}
-	
+
 
 }

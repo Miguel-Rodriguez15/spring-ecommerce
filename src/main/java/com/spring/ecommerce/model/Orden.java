@@ -49,7 +49,7 @@ public class Orden {
      * @param numero        , numero de la orden
      * @param fechaCreacion , fecha de la creacion de la orden
      * @param fechaRecibida , fecha en la que se recibio la orden de la orden
-     * @param total         ,  reesuktado final de la orden realizada
+     * @param total         ,  reesultado final de la orden realizada
      */
 
     public Orden(Integer id, String numero, Date fechaCreacion, Date fechaRecibida, double total) {

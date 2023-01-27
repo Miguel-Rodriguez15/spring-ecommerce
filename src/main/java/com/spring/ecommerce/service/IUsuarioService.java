@@ -6,12 +6,23 @@ import java.util.Optional;
 import com.spring.ecommerce.model.Usuario;
 
 public interface IUsuarioService {
+    /**
+     * Metodo para  los datos del usuario
+     */
     List<Usuario> findall();//obtenemos todos los usuarios
 
+    /**
+     * Metodo para enviar por parametro el id del usuario
+     */
     Optional<Usuario> findById(Integer id);
 
-    //metodo save para guardar en la base de datos
+    /**
+     * Metodo para guardar al usuario
+     */
     Usuario save(Usuario usuario);
 
+    /**
+     * Metodo para enviar por parametro el email del usuario
+     */
     Optional<Usuario> findByEmail(String email);
 }

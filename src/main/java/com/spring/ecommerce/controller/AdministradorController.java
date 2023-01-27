@@ -18,33 +18,55 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.spring.ecommerce.model.Producto;
 import com.spring.ecommerce.service.ProductoService;
 
+/**
+ * Controlador para el administrador
+ *
+ * @autor Miguel Rodriguez
+ */
 @Controller // le indico que sera un controlador
 @RequestMapping("/administrador") // le indico la url por la cual mostrara mi arhivo html
 public class AdministradorController {
-    @Autowired
-    private ProductoService productoService;//llamo mi variables con mis servicios (crud)
 
+    //llamo mi variables con mis servicios (crud)
+    @Autowired
+    private ProductoService productoService;
+    //loger para verficacion de datos por consola
     private Logger logg = LoggerFactory.getLogger(AdministradorController.class);
+
+    //llamado de los servicios de la orden para llamado de cruds
     @Autowired
     private IOrdenService ordenService;
+
+    //llamado de los servicios del usuario para llamado de cruds
     @Autowired
     private IUsuarioService usuarioService;
 
-    @GetMapping("") // mapeo la pagina de destino
+    /**
+     * Metodo para el listado de productos en la home
+     * del administrador,
+     * se muestra el listado de los productos.
+     */
+    @GetMapping("")
     public String home(Model model) {
 
-        List<Producto> productos = productoService.findAll();//lista de tipo productos y todos los prodctos de la base de datos
-        model.addAttribute("productos", productos);//lo paso a la vista home
-        return "administrador/home";// indico la carpeta en la que esta/lanzo mi pagina deseada
+        List<Producto> productos = productoService.findAll();
+        model.addAttribute("productos", productos);
+        return "administrador/home";
     }
+
+    /**
+     * Metodo para mostrar el listado de los usuarios
+     */
 
     @GetMapping("/usuarios")
     public String usuarios(Model model) {
-        //obtenemos todos los usuarios y los pasamos atreves de una lista
         model.addAttribute("usuarios", usuarioService.findall());
         return "administrador/usuarios";
     }
 
+    /**
+     * Metodo para mostrar el listado de las ordenes
+     */
     @GetMapping("/ordenes")
     public String ordenes(Model model) {
         model.addAttribute("ordenes", ordenService.findAll());
@@ -53,7 +75,7 @@ public class AdministradorController {
 
 
     /**
-     * Creacion del metodo detalle orden para wl administrador
+     * Creacion del metodo detalle orden para el administrador
      *
      * @param id, identificador de la orden  que se encuentra en la base de tados
      */

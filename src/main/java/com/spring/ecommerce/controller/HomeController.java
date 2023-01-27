@@ -29,176 +29,205 @@ import com.spring.ecommerce.service.ProductoService;
 
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * Clase para las sesiones y redireccionamientos de vistas para el del admin y el user
+ *
+ * @autor Miguel Rodriguez
+ */
 @Controller
-@RequestMapping("/")//le indico que se lanzara desde la ruta raiz
+@RequestMapping("/")
 public class HomeController {
-	private final Logger log=LoggerFactory.getLogger(HomeController.class);
-	
-	//para almacenar los detalles de la orden
+	private final Logger log = LoggerFactory.getLogger(HomeController.class);
+
+
 	List<DetalleOrden> detalles = new ArrayList<DetalleOrden>();
-	
+
 	//datos de la orden
-	Orden orden = new Orden(); 
-	
+	Orden orden = new Orden();
+
 	@Autowired
-	private ProductoService productoService;//lamo mis ervicios
+	private ProductoService productoService;
 
 	@Autowired
 	private IUsuarioService usuarioService;
-	
+
 	@Autowired
-	private IOrdenService ordenService;//creamos el objeto con el fin de acceder al metodo de generar ordenes
-	
+	private IOrdenService ordenService;
+
 	@Autowired
-	private IDetalleOrdenService detalleOrdenService;//
-	
+	private IDetalleOrdenService detalleOrdenService;
+
+	/**
+	 * Metodo para el manejo de sesiones
+	 */
 	@GetMapping("")
-	public String home(Model model, HttpSession session) {//llamo mi clase model para poder llamar los atributos
-        //lanzamos el id de la session por consola
-		log.info("sesion del usuario:{}",session.getAttribute("idusuario"));
-		
-		model.addAttribute("productos", productoService.findAll());//traigo todos los atributos de productos
-		
-		//sesion
-          model.addAttribute("sesion", session.getAttribute("idusuario"));
-		
+	public String home(Model model, HttpSession session) {
+
+		log.info("sesion del usuario:{}", session.getAttribute("idusuario"));
+
+		model.addAttribute("productos", productoService.findAll());
+
+
+		model.addAttribute("sesion", session.getAttribute("idusuario"));
+
 		return "usuario/home";
 	}
-	//metodo recuperar el id del producto al usar la opcion (ver el producto)
+
+	/**
+	 * metodo recuperar el id del producto al usar la opcion (ver el producto)
+	 */
 	@GetMapping("productohome/{id}")
-	public String productoHome(@PathVariable Integer id, Model model) {//llamo mi clase model para traer los atributos del productp
-		log.info("Id producto enviado como parametro{}",id);//le envio por consola el id del producto
-		Producto producto = new Producto();//llamo mi objeto de tipo producto
-		Optional<Producto> productoOptional = productoService.get(id);//almaceno mi servicio get id producto en mi objeto opcional 
-		producto = productoOptional.get();//devuelvo lo almacenado anteriormente almacenandolo en una nueva variabe
-		model.addAttribute("producto", producto);//llamo mi clase model y agrego los traiburos del producto	  
-	    return "usuario/productohome";
+	public String productoHome(@PathVariable Integer id, Model model) {
+		log.info("Id producto enviado como parametro{}", id);
+		Producto producto = new Producto();
+		Optional<Producto> productoOptional = productoService.get(id);
+		producto = productoOptional.get();
+		model.addAttribute("producto", producto);
+		return "usuario/productohome";
 	}
-	@PostMapping("/cart")//se hace una peticion de tipo post que redireccione a este metodo
-	public String addcart(@RequestParam Integer id, @RequestParam Integer cantidad,Model model ) {
+
+	/**
+	 * Metodo para hacer uso de la opcion del carrito
+	 *
+	 * @param cantidad , obtenemos la cantidad enviada por la vista y la alamacenamos en nuestra base de datos
+	 */
+	@PostMapping("/cart")
+	public String addcart(@RequestParam Integer id, @RequestParam Integer cantidad, Model model) {
 		DetalleOrden detalleOrden = new DetalleOrden();
 		Producto producto = new Producto();
 		double sumaTotal = 0;
 		Optional<Producto> optionalProducto = productoService.get(id);
 		log.info("Producto agregado: {}", optionalProducto.get());
-		log.info("cantidad {}",cantidad);
-		producto=optionalProducto.get();//muestro los productos obtenidos desde la base datos
-		
-		detalleOrden.setCantidad(cantidad);//lo obtenemos desde la variable cantidad que se envia desde la vista
+		log.info("cantidad {}", cantidad);
+		producto = optionalProducto.get();
+
+		detalleOrden.setCantidad(cantidad);
 		detalleOrden.setPrecio(producto.getPrecio());
 		detalleOrden.setNombre(producto.getNombre());
-		detalleOrden.setTotal(producto.getPrecio()*cantidad);//multiplicamos el precio del producto por la cantidad para mostrar el total
+		detalleOrden.setTotal(producto.getPrecio() * cantidad);
 		detalleOrden.setProducto(producto);
-		
-		//validar que el produto no se añada dos veces
-		Integer idProducto=producto.getId();
-		boolean ingresado=detalles.stream().anyMatch(p -> p.getProducto().getId()==idProducto);
-		
-		if(!ingresado) {
-		//agregamos todos los atributos almacenados a detalles
-		
+
+
+		Integer idProducto = producto.getId();
+		boolean ingresado = detalles.stream().anyMatch(p -> p.getProducto().getId() == idProducto);
+
+		if (!ingresado) {
+
+
 			detalles.add(detalleOrden);
 		}
-		
-	
-		
-		//sumamos todo los totales del producto que se encuentren en la lista
-		sumaTotal=detalles.stream().mapToDouble(dt->dt.getTotal()).sum();
-		
+
+
+		sumaTotal = detalles.stream().mapToDouble(dt -> dt.getTotal()).sum();
+
 		orden.setTotal(sumaTotal);
 		model.addAttribute("cart", detalles);//agregamos al carrito los detalles
 		model.addAttribute("orden", orden);//pasamos por la orden el total
-		 
+
 		return "usuario/carrito";
 	}
-	
-//quitar un producto del carrito
+
+	/**
+	 * Meotodo para quitar quitar un producto del carrito
+	 *
+	 * @param id, el id es la identificacion del detalle de la orden
+	 */
 	@GetMapping("/delete/cart/{id}")
 	public String deleteProductoCar(@PathVariable Integer id, Model model) {
 		//lista nueva de productos
 		List<DetalleOrden> ordenesNuevas = new ArrayList<DetalleOrden>();
-		
+
 		//si encuientro un id que este en dellaes ese no lo agrega a las ordenes nuevas
-		for(DetalleOrden detalleOrden:detalles) {
-			if(detalleOrden.getProducto().getId()!=id) {
+		for (DetalleOrden detalleOrden : detalles) {
+			if (detalleOrden.getProducto().getId() != id) {
 				ordenesNuevas.add(detalleOrden);
-				
+
 			}
 		}
-		//poner la nueva lista con los productos restantes
-		detalles=ordenesNuevas;
-		
-		double sumaTotal=0;
-		sumaTotal=detalles.stream().mapToDouble(dt->dt.getTotal()).sum();
-		
+
+		detalles = ordenesNuevas;
+
+		double sumaTotal = 0;
+		sumaTotal = detalles.stream().mapToDouble(dt -> dt.getTotal()).sum();
+
 		orden.setTotal(sumaTotal);
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
-		 
+
 		return "usuario/carrito";
 	}
-	//metodo para ver el carrito desde el header
+
+	/**
+	 * metodo para ver el carrito desde el header
+	 */
 	@GetMapping("/getCart")
 	public String getCart(Model model, HttpSession session) {
-		
-		
+
+
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
-		
-		//sesion
-		model.addAttribute("sesion",session.getAttribute("idusuario"));
+
+
+		model.addAttribute("sesion", session.getAttribute("idusuario"));
 		return "/usuario/carrito";
 	}
-	//mostrar los datos de la orden y del usuario
+
+	/**
+	 * mostrar los datos de la orden y del usuario
+	 */
 	@GetMapping("/order")
-	public String order(Model model,HttpSession session) {
-		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); 
-		
+	public String order(Model model, HttpSession session) {
+		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
+
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
 		model.addAttribute("usuario", usuario);
 		return "usuario/resumenorden";
 	}
-	
-	@GetMapping("/saveOrder")	
+
+	/**
+	 * Metodo para guardar la orden
+	 */
+	@GetMapping("/saveOrder")
 	public String saveOrder(HttpSession session) {
 		Date fechaCreacion = new Date();
 		orden.setFechaCreacion(fechaCreacion);
 		orden.setNumero(ordenService.generarNumeroOrden());
-		
-		//usuario
-		//hacemos el envio del usuario por el id de la session
-		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); 
 
-		orden.setUsuario(usuario);//le envio a la orden mi usuario
-		ordenService.save(orden);//guardo mi orden
-		
+		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
+
+		orden.setUsuario(usuario);
+		ordenService.save(orden);
+
 		//guardar detalles
-		
-		for(DetalleOrden dt:detalles) {//el objeto de tipo detalle orden se llamara dt y recorrera la lista DetalleOrden con el objeto detalles
-			dt.setOrden(orden);//pasamos la orden a la que pertenece
-            detalleOrdenService.save(dt);//y pasamos a guardar el detalle de la orden
+
+		for (DetalleOrden dt : detalles) {
+			dt.setOrden(orden);
+			detalleOrdenService.save(dt);
 		}
-		
+
 		//limpiar lista y orden
 		orden = new Orden();
 		detalles.clear();
-		
-		
+
+
 		return "redirect:/";
 	}
-	
+
+	/**
+	 * Metodo para buscar los productos
+	 *
+	 * @param nombre , este objeto hace una comparacion con la lista de productos que estan en la base de datos
+	 */
 	@PostMapping("/search")
-	
-	public String searchProduct(@RequestParam String nombre,Model model) {
-		log.info("Nombre del producto:{}",nombre);
-		
-	     //mostrar los productos que tengan similitud con la busqueda que realice
-		List<Producto> productos= productoService.findAll().stream().filter(p ->p.getNombre().contains(nombre)).collect(Collectors.toList());
-		//reutilizamos la lista que ya tenemos en la pagina home de usuario
-		model.addAttribute("productos", productos);//comparamos la lista de los productos con mi objeto lista de producto recientemente creado
-		
+
+	public String searchProduct(@RequestParam String nombre, Model model) {
+		log.info("Nombre del producto:{}", nombre);
+
+		List<Producto> productos = productoService.findAll().stream().filter(p -> p.getNombre().contains(nombre)).collect(Collectors.toList());
+		model.addAttribute("productos", productos);
+
 		return "usuario/home";
 	}
-	
+
 }

@@ -9,6 +9,8 @@ import com.spring.ecommerce.model.Usuario;
 
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, Integer> {
-
-	Optional<Usuario> findByEmail(String email);
+    /**
+     * Metodo para tarer el email del usuario
+     */
+    Optional<Usuario> findByEmail(String email);
 }

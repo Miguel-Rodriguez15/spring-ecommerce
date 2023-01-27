@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.spring.ecommerce.model.Producto;
-//indico la tabla va a usarser el repositorio 
-@Repository //inidicamos para que esta despues se pueda inyectar en nuestro servicio
+
+@Repository
 public interface IProductoRepository extends JpaRepository<Producto, Integer> {
 
 }

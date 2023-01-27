@@ -10,42 +10,39 @@ import com.spring.ecommerce.model.Producto;
 import com.spring.ecommerce.repository.IProductoRepository;
 
 @Service
-public class ProductoServiceImpl implements  ProductoService{
-	//implemento los metodos crud
-	
-	//inyectamos clase a un objeto
-	@Autowired
-	private IProductoRepository productoRepository;
+public class ProductoServiceImpl implements ProductoService {
 
-	@Override
-	public Producto save(Producto producto) {
+    @Autowired
+    private IProductoRepository productoRepository;
 
-		return productoRepository.save(producto);
-	}
+    @Override
+    public Producto save(Producto producto) {
 
-	@Override
-	public Optional<Producto> get(Integer id) {
-		// TODO Auto-generated method stub
-		return productoRepository.findById(id);
-	}
+        return productoRepository.save(producto);
+    }
 
-	@Override
-	public void update(Producto producto) {
-		 productoRepository.save(producto);
-		
-	}
+    @Override
+    public Optional<Producto> get(Integer id) {
+        // TODO Auto-generated method stub
+        return productoRepository.findById(id);
+    }
 
-	@Override
-	public void delete(Integer id) {
-		productoRepository.deleteById(id);
-		
-	}
+    @Override
+    public void update(Producto producto) {
+        productoRepository.save(producto);
 
-	@Override
-	public List<Producto> findAll() {
-		return productoRepository.findAll();
-	}
+    }
 
+    @Override
+    public void delete(Integer id) {
+        productoRepository.deleteById(id);
+
+    }
+
+    @Override
+    public List<Producto> findAll() {
+        return productoRepository.findAll();
+    }
 
 
 }

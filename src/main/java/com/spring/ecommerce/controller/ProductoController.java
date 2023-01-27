@@ -22,12 +22,16 @@ import com.spring.ecommerce.service.UploadFileService;
 
 import jakarta.servlet.http.HttpSession;
 
+
+/**
+ * Controlador para los productos
+ */
 @Controller
 @RequestMapping("/productos")
 public class ProductoController {
 	private final Logger LOGGER = LoggerFactory.getLogger(ProductoController.class);// variable para prueba
 
-	// creamos un objeto para poder acceder a los metodos crud de la clase
+
 	@Autowired
 	private ProductoService productoService;
 
@@ -36,26 +40,33 @@ public class ProductoController {
 
 	@Autowired
 	private IUsuarioService usuarioService;
-	
+
+	/**
+	 * Metodo para mostrar todos los productos
+	 */
 	@GetMapping("")
-	public String show(Model model) {// este parametro es un objeto envia la lista de objeto producto hacia la vista
-										// show
+	public String show(Model model) {
 		model.addAttribute("productos", productoService.findAll());
 		return "productos/show";
 	}
 
+	/**
+	 * Metodo para el recidreccionamiento de la creacion del producto
+	 */
 	@GetMapping("create")
 	public String create() {
 		return "productos/create";// le digo que me redireccione a mi pagina create
 	}
 
-	// METODO PARA TESTEAR DE QUE LOS DATOS SE ESTA GUARDANDO
+	/**
+	 * METODO PARA TESTEAR DE QUE LOS DATOS SE ESTA GUARDANDO
+	 */
 	@PostMapping("/save")
 	public String save(Producto producto, @RequestParam("img") MultipartFile file, HttpSession session) throws IOException {
 		LOGGER.info("este es el objeto de producto {}", producto);// (asegurarnos de que tenga el metodo to string)
-		//Usuario u = new Usuario(1, "", "", "", "", "", "", "");// llamo mi entidad usuario y sus respectivos atributos
+		//Usuario u = new Usuario(1, "", "", "", "", "", "", "");
 		Usuario u = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); //le envio el usuario con el id 1 para testeo ya que toda orden necedita un usuario
-														// para enviar los datos por parametros
+		// para enviar los datos por parametros
 		producto.setUsuario(u);// almaceno los parametros enviados anteriormente
 
 		// imagen
@@ -70,28 +81,30 @@ public class ProductoController {
 		return "redirect:/productos";
 	}
 
-	@GetMapping("/edit/{id}") // buscamos el id del registro en la variabel{id}
-	public String edit(@PathVariable Integer id, Model model) {// llamo mi objeyo model
+	/**
+	 * Metodo para actualizar el producto
+	 */
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable Integer id, Model model) {
 		Producto producto = new Producto();
-		Optional<Producto> optionalProducto = productoService.get(id);// devolvemos el id
-		producto = optionalProducto.get();// traemos el pdroducto que solicitamos buscar
-		LOGGER.info("producto Buscado:{}", producto);// mostramos el id solicitado por consola
-		model.addAttribute("producto", producto);// mi objeto model agrego los atributos le paso el valor producto para
-													// cargar en la vista
-		return "productos/edit";// retornamos la vista
+		Optional<Producto> optionalProducto = productoService.get(id);
+		producto = optionalProducto.get();
+		LOGGER.info("producto Buscado:{}", producto);
+		model.addAttribute("producto", producto);
+
+		return "productos/edit";
 	}
 
 	@PostMapping("/update")
-
-	public String update(Producto producto, @RequestParam("img") MultipartFile file) throws IOException {// le envio por
-		// producto
+/** Metodo para actualizar la imagen del producto*/
+	public String update(Producto producto, @RequestParam("img") MultipartFile file) throws IOException {
 		Producto p = new Producto();
 		p = productoService.get(producto.getId()).get();
 
 		if (file.isEmpty()) {// cuando editamos un producto pero no cambiamos la imagen
 			producto.setImagen(p.getImagen());
-		} else {// cuando se edita la imagen
-			// eliminar cuando no sea la imagen por defecto
+		} else {
+
 			if (!p.getImagen().equals("default.jpg")) {
 				upload.deleteImage(p.getImagen());
 			}
@@ -100,19 +113,22 @@ public class ProductoController {
 			producto.setImagen(nombreImagen);
 		}
 		producto.setUsuario(p.getUsuario());
-		productoService.update(producto);// llamo mi creud update le envio por paramtero mi objeto
-		return "redirect:/productos";// redireccion a mi listado de productos
+		productoService.update(producto);
+		return "redirect:/productos";
 	}
 
-	@GetMapping("/delete/{id}") // buscamos el id del registro en la variabel{id}
-	public String delete(@PathVariable Integer id) {// alamaceno en mi nuevo objeto id
+	/**
+	 * Metodo para elminar el producto
+	 */
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable Integer id) {
 		Producto p = new Producto();
-		// eliminar cuando no sea la imagen por defecto
+
 		p = productoService.get(id).get();
 		if (!p.getImagen().equals("default.jpg")) {
 			upload.deleteImage(p.getImagen());
 		}
-		productoService.delete(id);// llamo mi crud y elimino el id enviado por parametro
+		productoService.delete(id);
 
 		return "redirect:/productos";
 	}
